@@ -72,6 +72,20 @@ namespace SmartLearn.Services
             obj.PasswordHash= BCrypt.Net.BCrypt.HashPassword(password);
             await _context.Users.AddAsync(obj);
             await _context.SaveChangesAsync();
+
+            if (obj.Role == "Instructor")
+            {
+                var profile = new InstructorProfile
+                {
+                    UserId = obj.Id, // Link to the new User
+                    Bio = "New Instructor",
+                    PortfolioUrl = "",
+                    YearsOfExperience = 0
+                };
+                _context.InstructorProfiles.Add(profile);
+                await _context.SaveChangesAsync();
+            }
+
             return "User registered successfully.";
         }
     }
